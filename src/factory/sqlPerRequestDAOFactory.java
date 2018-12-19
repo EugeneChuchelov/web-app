@@ -13,16 +13,16 @@ public class sqlPerRequestDAOFactory extends DAOFactory {
 
     @Override
     public EmployeesDAO getEmployeesDAO() {
-        return new EmployeesDAOimpl("jdbc/Res");
+        return new EmployeesDAOimpl();
     }
 
     @Override
     public DepartmentsDAO getDepartmentsDAO() {
-        return new DepartmentDAOimpl("jdbc/Res");
+        return new DepartmentDAOimpl();
     }
 
     @Override
     public EmployeesDAOplus getEmployeesDAOplus(){
-        return new EmployeesDAOimpl("jdbc/Res");
+        return new EmployeesDAOimpl();
     }
 }

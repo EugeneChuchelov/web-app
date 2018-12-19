@@ -104,4 +104,20 @@ public class Employee {
     public void setDepartment(Department department) {
         this.department = department;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this){
+            return true;
+        }
+        if(obj instanceof Employee){
+            return ((Employee)obj).firstName.equals(firstName) &&
+                    ((Employee)obj).secondName.equals(secondName) &&
+                    ((Employee)obj).birthDate.equals(birthDate) &&
+                    ((Employee)obj).hireDate.equals(hireDate) &&
+                    ((Employee)obj).salary == salary &&
+                    ((Employee)obj).jobtitle.equals(jobtitle);
+        }
+        return super.equals(obj);
+    }
 }

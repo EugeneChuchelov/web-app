@@ -1,12 +1,15 @@
 package impl;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
 import dao.DepartmentsDAO;
+import dao.EmployeesDAOplus;
 import data.Department;
 import data.Employee;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,19 +17,28 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 public class DepartmentDAOimpl implements DepartmentsDAO {
-    private DataSource dataSource;
-    private String JNDIName;
-    public DepartmentDAOimpl(String JNDIName){
+    private static final String JNDI_NAME = "jdbc/Res";
+    private MysqlDataSource dataSource;
+
+    public DepartmentDAOimpl() {
         InitialContext ctx = null;
-        this.JNDIName = JNDIName;
         try {
             ctx = new InitialContext();
         } catch (NamingException e) {
             e.printStackTrace();
         }
         try {
-            dataSource = (DataSource) ctx.lookup(this.JNDIName);
+            DataSource ds = (DataSource) ctx.lookup(JNDI_NAME);
+            dataSource = ds.unwrap(MysqlDataSource.class);
+
         } catch (NamingException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            dataSource.setAutoReconnect(true);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -35,13 +47,15 @@ public class DepartmentDAOimpl implements DepartmentsDAO {
     public int insert(Department department) {
         String query = "INSERT INTO `departments` (`id`, `name`, `Description`) VALUES (?, ?, ?)";
         try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(query);
+            Connection con = dataSource.getConnection();
+            PreparedStatement statement = con.prepareStatement(query);
             statement.setInt(1, department.getId());
             statement.setString(2, department.getName());
             statement.setString(3, department.getDescription());
             statement.executeUpdate();
-            EmployeesDAOimpl employeesDAOimpl = new EmployeesDAOimpl(JNDIName);
-            for(Employee employee : department.getEmployees()){
+            con.close();
+            EmployeesDAOimpl employeesDAOimpl = new EmployeesDAOimpl();
+            for (Employee employee : department.getEmployees()) {
                 employeesDAOimpl.saveOrUpdate(employee);
             }
         } catch (SQLException e) {
@@ -54,11 +68,13 @@ public class DepartmentDAOimpl implements DepartmentsDAO {
     public boolean delete(Department department) {
         String query = "DELETE FROM `departments` WHERE `departments`.`id` = ?";
         try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(query);
+            Connection con = dataSource.getConnection();
+            PreparedStatement statement = con.prepareStatement(query);
             statement.setInt(1, department.getId());
             statement.executeUpdate();
-            EmployeesDAOimpl employeesDAOimpl = new EmployeesDAOimpl(JNDIName);
-            for(Employee employee : department.getEmployees()){
+            con.close();
+            EmployeesDAOimpl employeesDAOimpl = new EmployeesDAOimpl();
+            for (Employee employee : department.getEmployees()) {
                 employeesDAOimpl.delete(employee);
             }
         } catch (SQLException e) {
@@ -71,34 +87,40 @@ public class DepartmentDAOimpl implements DepartmentsDAO {
     public Department findByID(int id) {
         String query = "SELECT * FROM `departments` WHERE id = ?";
         LinkedList<Employee> employees = new LinkedList<>();
-        Department department;
+        Department department = null;
         try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(query);
+            Connection con = dataSource.getConnection();
+            PreparedStatement statement = con.prepareStatement(query);
             statement.setInt(1, id);
             ResultSet rs = statement.executeQuery();
             rs.next();
+            EmployeesDAOplus ds = new EmployeesDAOimpl();
             department = new Department(rs.getString("name"), rs.getString("description"),
-                                        new EmployeesDAOimpl(JNDIName).findByDepID(id));
-            for (Employee employee : department.getEmployees()){
+                    ds.findByDepID(id));
+            con.close();
+            for (Employee employee : department.getEmployees()) {
                 employee.setDepartment(department);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return department;
     }
 
     @Override
     public boolean update(Department department) {
         String query = "UPDATE `departments` SET `name` = ?, `Description` = ? WHERE `departments`.`id` = ?";
         try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(query);
+            Connection con = dataSource.getConnection();
+            PreparedStatement statement = con.prepareStatement(query);
             statement.setString(1, department.getName());
             statement.setString(2, department.getDescription());
             statement.setInt(3, department.getId());
             statement.executeUpdate();
-            EmployeesDAOimpl employeesDAOimpl = new EmployeesDAOimpl(JNDIName);
-            for(Employee employee : department.getEmployees()){
+            con.close();
+            EmployeesDAOimpl employeesDAOimpl = new EmployeesDAOimpl();
+            for (Employee employee : department.getEmployees()) {
                 employeesDAOimpl.saveOrUpdate(employee);
             }
         } catch (SQLException e) {
@@ -111,7 +133,8 @@ public class DepartmentDAOimpl implements DepartmentsDAO {
     public boolean saveOrUpdate(Department department) {
         String query = "SELECT id FROM `departments` WHERE id=?";
         try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(query);
+            Connection con = dataSource.getConnection();
+            PreparedStatement statement = con.prepareStatement(query);
             statement.setInt(1, department.getId());
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
@@ -119,6 +142,7 @@ public class DepartmentDAOimpl implements DepartmentsDAO {
             } else {
                 insert(department);
             }
+            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -130,12 +154,14 @@ public class DepartmentDAOimpl implements DepartmentsDAO {
         String query = "SELECT id FROM `departments` WHERE departments.name = ?";
         LinkedList<Department> found = new LinkedList<>();
         try {
-            PreparedStatement statement = dataSource.getConnection().prepareStatement(query);
+            Connection con = dataSource.getConnection();
+            PreparedStatement statement = con.prepareStatement(query);
             statement.setString(1, name);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 found.add(findByID(rs.getInt("id")));
             }
+            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
