@@ -56,5 +56,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="validation-api-2.0.1.Final" level="project" />
   </component>
 </module>
