@@ -5,6 +5,7 @@ import dao.DepartmentsDAO;
 import dao.EmployeesDAOplus;
 import data.Employee;
 
+import javax.annotation.Resource;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -17,9 +18,11 @@ import java.util.Set;
 
 public class EmployeesDAOimpl implements EmployeesDAOplus {
     private static final String JNDI_NAME = "jdbc/Res";
+    @Resource(mappedName = JNDI_NAME)
     private MysqlDataSource dataSource;
 
     public EmployeesDAOimpl() {
+        /*
         InitialContext ctx = null;
         try {
             ctx = new InitialContext();
@@ -27,8 +30,8 @@ public class EmployeesDAOimpl implements EmployeesDAOplus {
             e.printStackTrace();
         }
         try {
-            DataSource ds = (DataSource) ctx.lookup(JNDI_NAME);
-            dataSource = ds.unwrap(MysqlDataSource.class);
+            //DataSource ds = (DataSource) ctx.lookup(JNDI_NAME);
+            //dataSource = ds.unwrap(MysqlDataSource.class);
 
         } catch (NamingException e) {
             e.printStackTrace();
@@ -40,6 +43,7 @@ public class EmployeesDAOimpl implements EmployeesDAOplus {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        */
     }
 
     @Override
@@ -183,9 +187,10 @@ public class EmployeesDAOimpl implements EmployeesDAOplus {
 
     @Override
     public boolean saveOrUpdate(Employee employee) {
-        String query = "SELECT id FROM `employees` WHERE id=?";
+        String query = "SELECT * FROM `employees` WHERE id=?";
         try {
             Connection con = dataSource.getConnection();
+            con.createStatement()
             PreparedStatement statement = con.prepareStatement(query);
             statement.setInt(1, employee.getId());
             ResultSet rs = statement.executeQuery();
@@ -292,7 +297,7 @@ public class EmployeesDAOimpl implements EmployeesDAOplus {
 
     @Override
     public Collection<Employee> getAll() {
-        String query = "SELECT AVG(salary) FROM employees";
+        String query = "SELECT * FROM employees";
         ResultSet rs;
         LinkedList<Employee> found = new LinkedList<>();
         try {
@@ -300,7 +305,11 @@ public class EmployeesDAOimpl implements EmployeesDAOplus {
             Statement stmt = con.createStatement();
             rs = stmt.executeQuery(query);
             while (rs.next()) {
-                found.add(findByID(rs.getInt("id")));
+                found.add(new Employee(rs.getString("first_name"), rs.getString("second_name"),
+                        rs.getDate("birth_date").toLocalDate(), rs.getDate("hire_date").toLocalDate(),
+                        rs.getString("name"),
+                        rs.getDouble("salary"),
+                        null));
             }
         } catch (SQLException e) {
             e.printStackTrace();
