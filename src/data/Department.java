@@ -1,27 +1,26 @@
 package data;
 
-import java.util.Set;
-
 public class Department {
     private int id;
     private String name;
-    private String description;
-    private transient Set<Employee> employees;
+    String loc;
 
     public Department() {
     }
 
-    public Department(String name, String description, Set<Employee> employees) {
+    public Department(String name) {
         this.name = name;
-        this.description = description;
-        this.employees = employees;
     }
 
-    protected Department(String name, String description, Set<Employee> employees, int id) {
+    protected Department(String name, int id) {
         this.id = id;
         this.name = name;
-        this.description = description;
-        this.employees = employees;
+    }
+
+    public Department(int id, String name, String loc) {
+        this.id = id;
+        this.name = name;
+        this.loc = loc;
     }
 
     public String getName() {
@@ -32,36 +31,15 @@ public class Department {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Set<Employee> getEmployees() {
-        return employees;
-    }
-
-    public void addEmployee(Employee employee){
-        employees.add(employee);
-    }
-
-    public Employee removeEmployee(Employee employee){
-        employees.remove(employee);
-        return employee;
-    }
-
-    protected void setId(int id) {
-        this.id = id;
-    }
-
     protected void setId() {
 
     }
 
     public int getId() {
         return id;
+    }
+
+    protected void setId(int id) {
+        this.id = id;
     }
 }

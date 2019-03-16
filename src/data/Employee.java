@@ -4,37 +4,25 @@ import java.time.LocalDate;
 
 public class Employee {
     private int id;
-    private String firstName;
-    private String secondName;
-    private LocalDate birthDate;
-    private LocalDate hireDate;
+    private String name;
     private String jobtitle;
+    private int mgr;
+    private LocalDate hireDate;
     private double salary;
+    private double comm;
     private Department department;
 
     public Employee() {
     }
 
-    public Employee(String firstName, String secondName, LocalDate birthDate,
-                    LocalDate hireDate, String jobtitle, double salary, Department department) {
-        this.firstName = firstName;
-        this.secondName = secondName;
-        this.birthDate = birthDate;
-        this.hireDate = hireDate;
-        this.jobtitle = jobtitle;
-        this.salary = salary;
-        this.department = department;
-    }
-
-    protected Employee(int id, String firstName, String secondName, LocalDate birthDate,
-                       LocalDate hireDate, String jobtitle, double salary, Department department) {
+    public Employee(int id, String name, String jobtitle, int mgr, LocalDate hireDate, double salary, double comm, Department department) {
         this.id = id;
-        this.firstName = firstName;
-        this.secondName = secondName;
-        this.birthDate = birthDate;
-        this.hireDate = hireDate;
+        this.name = name;
         this.jobtitle = jobtitle;
+        this.mgr = mgr;
+        this.hireDate = hireDate;
         this.salary = salary;
+        this.comm = comm;
         this.department = department;
     }
 
@@ -49,28 +37,12 @@ public class Employee {
     protected void setId() {
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getSecondName() {
-        return secondName;
-    }
-
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
-    }
-
-    public LocalDate getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public LocalDate getHireDate() {
@@ -111,9 +83,7 @@ public class Employee {
             return true;
         }
         if(obj instanceof Employee){
-            return ((Employee)obj).firstName.equals(firstName) &&
-                    ((Employee)obj).secondName.equals(secondName) &&
-                    ((Employee)obj).birthDate.equals(birthDate) &&
+            return ((Employee)obj).name.equals(name) &&
                     ((Employee)obj).hireDate.equals(hireDate) &&
                     ((Employee)obj).salary == salary &&
                     ((Employee)obj).jobtitle.equals(jobtitle);
