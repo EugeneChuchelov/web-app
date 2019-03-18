@@ -9,13 +9,21 @@
     double firstNum = 0;
     double secondNum = 0;
     String res = "";
+
     if (request.getParameter("num0") != null) {
         firstNum = Double.parseDouble(request.getParameter("num0"));
+        session.setAttribute("num0", firstNum);
+    } else {
+        Double fn = (Double) session.getAttribute("num0");
+        if (fn != null) {
+            firstNum = fn;
+        }
     }
+
     if (request.getParameter("num1") != null) {
         secondNum = Double.parseDouble(request.getParameter("num1"));
     }
-
+    session.setAttribute("num0", secondNum);
     if (request.getParameter("plus") != null) {
         res = firstNum + " + " + secondNum + " = " + (firstNum + secondNum);
     }
