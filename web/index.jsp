@@ -22,8 +22,14 @@
 
     if (request.getParameter("num1") != null) {
         secondNum = Double.parseDouble(request.getParameter("num1"));
+        session.setAttribute("num1", firstNum);
+    } else {
+        Double fn = (Double) session.getAttribute("num1");
+        if (fn != null) {
+            firstNum = fn;
+        }
     }
-    session.setAttribute("num0", secondNum);
+
     if (request.getParameter("plus") != null) {
         res = firstNum + " + " + secondNum + " = " + (firstNum + secondNum);
     }
@@ -36,9 +42,6 @@
     if (request.getParameter("div") != null) {
         res = firstNum + " / " + secondNum + " = " + (firstNum / secondNum);
     }
-    if (request.getParameter("problem") != null) {
-        throw new Exception();
-    }
 %>
 <form action="index.jsp">
     <input type="text" name="num0" id="inp0" value="<%=firstNum%>">
@@ -49,8 +52,6 @@
     <br>
     <input type="submit" value="*" name="mult">
     <input type="submit" value="/" name="div">
-    <br>
-    <input type="submit" value="throw" name="problem">
 </form>
 <%=res%>
 </body>
