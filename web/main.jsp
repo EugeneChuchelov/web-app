@@ -1,8 +1,9 @@
 <%@ page import="java.util.Collection" %>
 <%@ page import="data.Employee" %>
-<%@ page import="dao.EmployeesDAO" %>
-<%@ page import="factory.DAOFactory" %>
 <%@ page import="java.util.LinkedList" %>
+<%@ page import="bean.EmplBean" %>
+<%@ page import="javax.naming.InitialContext" %>
+<%@ page import="bean.Empl" %>
 <%@page errorPage="errorPage.jsp"%>
 <html>
 	<head>
@@ -16,18 +17,21 @@
         int id = 0;
         String name = "";
 
-        Collection<Employee> employees = new LinkedList<Employee>();;
-        EmployeesDAO dao = DAOFactory.getDAOFactory().getEmployeesDAO();
+        Collection<Employee> employees = new LinkedList<Employee>();
+
+        InitialContext ic = new InitialContext();
+        Empl empl = (Empl) ic.lookup(Empl.class.getName());
+
         if(request.getParameter("findAll") != null){
-            employees = dao.findAll();
+            employees = empl.findAll();
         }
         if(request.getParameter("findById") != null){
             id = Integer.parseInt(request.getParameter("id"));
-            employees = dao.findByID(id);
+            employees = empl.findByID(id);
         }
         if(request.getParameter("findByName") != null){
             name = request.getParameter("name");
-            employees = dao.findByName(name.toUpperCase());
+            employees = empl.findByName(name.toUpperCase());
         }
     %>
 		<form action="main.jsp">

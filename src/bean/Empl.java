@@ -1,10 +1,12 @@
-package dao;
+package bean;
 
 import data.Employee;
 
+import javax.ejb.Remote;
 import java.util.Collection;
 
-public interface EmployeesDAO {
+@Remote
+public interface Empl {
     Collection<Employee> findByID(int id);
 
     Collection<Employee> findByName(String name);

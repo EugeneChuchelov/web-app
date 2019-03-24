@@ -1,9 +1,9 @@
-package impl;
+package bean;
 
-import dao.DepartmentsDAO;
-import dao.EmployeesDAO;
+import data.Department;
 import data.Employee;
 
+import javax.ejb.Stateless;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -11,11 +11,12 @@ import java.sql.*;
 import java.util.Collection;
 import java.util.LinkedList;
 
-public class EmployeesDAOimpl implements EmployeesDAO {
+@Stateless
+public class EmplBean implements Empl {
     private static final String JNDI_NAME = "jdbc/Orcl";
     private DataSource dataSource;
 
-    public EmployeesDAOimpl() {
+    public EmplBean() {
         InitialContext ctx = null;
         try {
             ctx = new InitialContext();
@@ -28,6 +29,7 @@ public class EmployeesDAOimpl implements EmployeesDAO {
             e.printStackTrace();
         }
     }
+
     @Override
     public Collection<Employee> findByID(int id) {
         String query = "SELECT * " +
@@ -47,6 +49,7 @@ public class EmployeesDAOimpl implements EmployeesDAO {
         }
         return found;
     }
+
     @Override
     public Collection<Employee> findByName(String name) {
         String query = "SELECT * FROM emp WHERE ename LIKE ?";
@@ -65,6 +68,7 @@ public class EmployeesDAOimpl implements EmployeesDAO {
         }
         return found;
     }
+
     @Override
     public Collection<Employee> findAll() {
         String query = "SELECT * FROM emp";
@@ -84,11 +88,29 @@ public class EmployeesDAOimpl implements EmployeesDAO {
     }
 
     private Employee createEmp(ResultSet rs) throws SQLException {
-        DepartmentsDAO departmentDAOimpl = new DepartmentDAOimpl();
         return new Employee(rs.getInt("EMPNO"), rs.getString("ENAME"),
                 rs.getString("JOB"), rs.getInt("MGR"),
                 rs.getDate("HIREDATE").toLocalDate(), rs.getDouble("SAL"),
                 rs.getDouble("COMM"),
-                departmentDAOimpl.findByID(rs.getInt("DEPTNO")));
+                findDeptByID(rs.getInt("DEPTNO")));
+    }
+
+    private Department findDeptByID(int id) {
+        String query = "SELECT * FROM dept WHERE deptno = ?";
+        Department department = null;
+        try {
+            Connection con = dataSource.getConnection();
+            PreparedStatement statement = con.prepareStatement(query);
+            statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+            rs.next();
+            department = new Department(rs.getInt("DEPTNO"),
+                    rs.getString("DNAME"), rs.getString("LOC"));
+            con.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return department;
     }
 }
