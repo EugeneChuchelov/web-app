@@ -1,8 +1,8 @@
 <%@ page import="java.util.Collection" %>
-<%@ page import="entity.Employee" %>
 <%@ page import="java.util.LinkedList" %>
 <%@ page import="javax.naming.InitialContext" %>
-<%@ page import="bean.EmployeeDAO" %>
+<%@ page import="employee.EmployeeHome" %>
+<%@ page import="employee.Employee" %>
 <%@page errorPage="errorPage.jsp"%>
 <html>
 <head>
@@ -17,17 +17,17 @@
     String name = "";
     Collection<Employee> employees = new LinkedList<Employee>();
     InitialContext ic = new InitialContext();
-    EmployeeDAO empl = (EmployeeDAO) ic.lookup(EmployeeDAO.class.getName());
+    EmployeeHome home = (EmployeeHome) ic.lookup("ejb/EmployeeEntityBean");
     if(request.getParameter("findAll") != null){
-        employees = empl.findAll();
+        employees = home.findAll();
     }
     if(request.getParameter("findById") != null){
         id = Integer.parseInt(request.getParameter("id"));
-        employees = empl.findByID(id);
+        employees.add(home.findByPrimaryKey(id));
     }
     if(request.getParameter("findByName") != null){
         name = request.getParameter("name");
-        employees = empl.findByName(name.toUpperCase());
+        employees = home.findByName(name.toUpperCase());
     }
 %>
 <form action="main.jsp">
@@ -57,7 +57,7 @@
             <td><%=employee.getName()%></td>
             <td><%=employee.getJobtitle()%></td>
             <td><%=employee.getHireDate()%></td>
-            <td><%=employee.getDepartment().getName()%></td>
+            <td><%=employee.getDepartmentName()%></td>
             <td><a href="javascript:removeEmployee(<%=employee.getId()%>)">Remove</a></td>
         </tr>
         <%}%>

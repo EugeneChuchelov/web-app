@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+		  http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+         version="3.1">
+    <enterprise-beans>
+        <entity>
+            <ejb-name>EmployeeEntityEJB</ejb-name>
+            <home>employee.EmployeeHome</home>
+            <remote>employee.Employee</remote>
+            <ejb-class>employee.EmployeeBean</ejb-class>
+            <persistence-type>Bean</persistence-type>
+            <prim-key-class>java.lang.Integer</prim-key-class>
+            <reentrant>true</reentrant>
+        </entity>
+    </enterprise-beans>
+    <assembly-descriptor>
+    </assembly-descriptor>
+</ejb-jar>
