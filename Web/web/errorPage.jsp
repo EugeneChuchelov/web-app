@@ -4,7 +4,6 @@
     <title>ERROR</title>
 </head>
 <body>
-<H1>ALL IS BROKEN!!!</H1>
 <%
     for (StackTraceElement s : exception.getStackTrace()){
 %>
