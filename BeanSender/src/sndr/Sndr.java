@@ -1,8 +1,8 @@
-package sender;
+package sndr;
 
 import javax.ejb.Remote;
 
 @Remote
-public interface Sender {
+public interface Sndr {
     void send(String message);
 }
