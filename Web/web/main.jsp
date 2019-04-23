@@ -15,6 +15,7 @@
     }
 %>
 <form action="main.jsp">
+    <%=Sndr.class.getName()%>
     <input type="text" placeholder="Message" name="text">
     <input type="submit" name = "Send" value="Send">
 </form>
