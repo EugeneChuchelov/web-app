@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<faces-config version="2.0"
+              xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    <navigation-rule>
+        <from-view-id>/start.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>play</from-outcome>
+            <to-view-id>/game.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>/game.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>win</from-outcome>
+            <to-view-id>/win.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-outcome>cheat</from-outcome>
+            <to-view-id>/cheat.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/win.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>again</from-outcome>
+            <to-view-id>/start.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+
+    <navigation-rule>
+        <from-view-id>/cheat.xhtml</from-view-id>
+        <navigation-case>
+            <from-outcome>again</from-outcome>
+            <to-view-id>/start.xhtml</to-view-id>
+        </navigation-case>
+    </navigation-rule>
+</faces-config>
