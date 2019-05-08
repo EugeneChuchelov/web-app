@@ -1,30 +1,24 @@
 package entity;
 
-import javax.persistence.*;
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Table(name = "DEPT")
-public class Department implements Serializable {
-    @Id
-    @Column(name = "DEPTNO")
+public class Department {
     private Integer id;
-    @Column(name = "DNAME")
+
     private String name;
-    @Column(name = "LOC")
+
     private String loc;
 
-    @Transient
-    @OneToMany(mappedBy = "department")
-    private Set<Employee> employees;
+    private Set<Employee> employees = new HashSet<Employee>();
 
-    public int getId() {
+    public Department() {}
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -50,5 +44,14 @@ public class Department implements Serializable {
 
     public void setEmployees(Set<Employee> employees) {
         this.employees = employees;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("id = ").append(id).append("; ");
+        stringBuilder.append("name = ").append(name).append("; ");
+        stringBuilder.append("loc = ").append(loc).append(";");
+        return stringBuilder.toString();
     }
 }

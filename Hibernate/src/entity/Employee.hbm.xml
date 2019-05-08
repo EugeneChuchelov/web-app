@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="entity.Employee" table="EMP">
+        <id name="id" column="EMPNO" type="java.lang.Integer">
+            <generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">
+                <param name="sequence_name">EMP_EMPNO</param>
+            </generator>
+        </id>
+
+        <property name="name" type="java.lang.String">
+            <column name="ENAME"/>
+        </property>
+
+        <property name="job" type="java.lang.String">
+            <column name="JOB"/>
+        </property>
+
+        <property name="manager" type="java.lang.Integer">
+            <column name="MGR"/>
+        </property>
+
+        <property name="hireDate" type="java.util.Date">
+            <column name="HIREDATE"/>
+        </property>
+
+        <property name="salary" type="java.lang.Double">
+            <column name="SAL"/>
+        </property>
+
+        <property name="comm" type="java.lang.Double">
+            <column name="COMM"/>
+        </property>
+
+        <one-to-one name="address" class="entity.Address" constrained="true" cascade="all"/>
+
+        <many-to-one name="department" class="entity.Department" column="DEPTNO" cascade="all"/>
+    </class>
+</hibernate-mapping>
